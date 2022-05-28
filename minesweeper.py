@@ -55,14 +55,12 @@ class mine(tile):
     """used to describe a mine tile only"""
     def __init__(self):
         super().__init__()
-        self.identifier = 'X'
+        self.identifier = 'X'  
 
     def interact(self, tilemap, index):
         """end game and reveal all mines"""
         global game_continue
         game_continue = False
-        if self.label == self.identifier:
-            return       
         self.reveal()
         self.reveal_all(tilemap)
         print('Game over!')
@@ -120,18 +118,30 @@ def tilemap_create(length, width, bombs):
 
 def get_user_input():
     user = input('Enter coordinates (X,Y): ')
+    if user == 'Q':
+        return [-1,-1]        
     user = user.split(',')
     response = [int(user[1]), int(user[0])]
     return response
 
-rows = 10 # max  = 10
-cols = 10 # max = 10
-bombs = 25 # max = rows * cols
-tilemap = tilemap_create(cols, rows, bombs)
-tilemap_print(tilemap)
-user = get_user_input()
+def main():
+    rows = 10 # max  = 10
+    cols = 10 # max = 10
+    bombs = 25 # max = rows * cols
 
-while game_continue:   
-    tilemap[user[0]][user[1]].interact(tilemap, user)
-    tilemap_print(tilemap)
-    user = get_user_input()
+    tilemap = tilemap_create(cols, rows, bombs)
+
+    while game_continue:   
+        tilemap_print(tilemap)
+        try:
+            user = get_user_input()
+            if user == [-1,-1]:
+                break
+            tilemap[user[0]][user[1]].interact(tilemap, user)
+        except:
+            print('Invalid input, try again')
+    print('\n')
+    tilemap_print(tilemap) #print last time to show result
+
+if __name__ == '__main__':
+    main()
