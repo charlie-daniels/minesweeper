@@ -20,7 +20,7 @@ Type Q to exit build.
 
 ## How to run
 
-The windows application can be found in the [dist](dist\minesweeper\minesweeper.exe) folder.
+The windows application can be found in the [dist](dist/minesweeper) folder.
 
 ## More info
 
