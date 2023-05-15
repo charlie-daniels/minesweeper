@@ -18,10 +18,10 @@ Type Q to exit build.
 
 - X ..... Mine
 
-## Installation
+## How to run
 
-For now, as this is still a work in progress, you can clone the repo and execute minesweeper.py to run it in the command line. This will be changed in future.
+The windows application can be found in the [dist](dist\minesweeper\minesweeper.exe) folder.
 
 ## More info
 
-As this game is not complete, I have been using [minesweeperonline](https://minesweeperonline.com) to test the niche things and which is a good benchmark to compare this program to.
+I have been using [minesweeperonline](https://minesweeperonline.com) to test niche circumstances, making this an excellent benchmark to compare this app to.
