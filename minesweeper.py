@@ -1,9 +1,9 @@
 from random import randint
 
-game_continue = True
+GAME_CONTINUE = True
 
-class tile():
-    """used to describe a blank tile"""
+class Tile():
+    """Used to describe a blank Tile"""
     def __init__(self):
         self.identifier = ' '
         self.label = '+'
@@ -12,35 +12,35 @@ class tile():
         return self.label
 
     def find_adjacent(self, tilemap, index_x, index_y):
-        if isinstance(tilemap[index_x][index_y], mine):
+        if isinstance(tilemap[index_x][index_y], Mine):
             return
         adjacent = 0
         for row in range(-1, 2):
             for col in range(-1, 2):
                 if index_x + row >= 0 and index_y + col >= 0:
                     if index_x + row  < len(tilemap) and index_y + col < len(tilemap[0]):
-                        if isinstance(tilemap[index_x + row][index_y + col], mine):
+                        if isinstance(tilemap[index_x + row][index_y + col], Mine):
                             adjacent += 1
         if adjacent != 0:
-            tilemap[index_x][index_y] = nonmine(adjacent)
+            tilemap[index_x][index_y] = NonMine(adjacent)
 
     def reveal(self):
         self.label = self.identifier
-        
+
     def interact(self, tilemap, index):
-        """find all connecting empty tiles and tiles with mines next to them and reveal them"""
+        """Find all connecting empty tiles and tiles with mines next to them and reveal them"""
         if self.label == self.identifier:
             return
         self.reveal()
         for row in range(-1, 2):
             for col in range(-1, 2):
                 if index[0] + row >= 0 and index[1] + col >= 0:
-                    if index[0] + row  < len(tilemap) and index[1] + col < len(tilemap[0]):                        
-                            if not (abs(row) == abs(col) and type(tilemap[index[0] + row][index[1] + col]) == tile):
-                                tilemap[index[0] + row][index[1] + col].interact(tilemap, [index[0] + row, index[1] + col])
+                    if index[0] + row  < len(tilemap) and index[1] + col < len(tilemap[0]):
+                        if not (abs(row) == abs(col) and isinstance(tilemap[index[0] + row][index[1] + col]) == Tile):
+                            tilemap[index[0] + row][index[1] + col].interact(tilemap, [index[0] + row, index[1] + col])
 
-class nonmine(tile):
-    """used to describe non-mine tile with adjacencies"""
+class NonMine(Tile):
+    """Used to describe non-Mine Tile with adjacencies"""
     def __init__(self, adjacent):
         super().__init__()
         self.adjacent = adjacent
@@ -51,16 +51,16 @@ class nonmine(tile):
             return
         self.reveal()
 
-class mine(tile):
-    """used to describe a mine tile only"""
+class Mine(Tile):
+    """Used to describe a Mine Tile only"""
     def __init__(self):
         super().__init__()
-        self.identifier = 'X'  
+        self.identifier = 'X'
 
     def interact(self, tilemap, index):
-        """end game and reveal all mines"""
-        global game_continue
-        game_continue = False
+        """End game and reveal all mines"""
+        global GAME_CONTINUE
+        GAME_CONTINUE = False
         self.reveal()
         self.reveal_all(tilemap)
         print('Game over!')
@@ -77,7 +77,7 @@ def tilemap_print(tilemap):
         print(i, end='')
     print()
 
-    for rows in range(len(tilemap)):
+    for rows, _ in enumerate(tilemap):
         current_row = tilemap[rows]
         print(f'{rows} ', end='')
         for cols in range(len(tilemap[0])):
@@ -89,23 +89,23 @@ def new_bomb_location(tilemap):
     row = randint(0, len(tilemap) - 1)
     col = randint(0, len(tilemap[0]) - 1)
     #if location is already a bomb
-    if isinstance(tilemap[row][col], mine):
+    if isinstance(tilemap[row][col], Mine):
         return new_bomb_location(tilemap)
     else:
-        return row, col 
+        return row, col
 
 def plant_bombs(tilemap, amount):
-    for i in range(amount):
+    for _ in range(amount):
         row, col = new_bomb_location(tilemap)
-        tilemap[row][col] = mine()
+        tilemap[row][col] = Mine()
     return tilemap
 
 def tilemap_create(length, width, bombs):
     tilemap = []
-    for rows in range(length):
+    for _ in range(length):
         new_row = []
-        for cols in range(width):
-            new_row.append(tile())
+        for _ in range(width):
+            new_row.append(Tile())
         tilemap.append(new_row)
 
     tilemap = plant_bombs(tilemap, bombs)
@@ -119,7 +119,7 @@ def tilemap_create(length, width, bombs):
 def get_user_input():
     user = input('Enter coordinates (X,Y): ')
     if user == 'Q':
-        return [-1,-1]        
+        return [-1,-1]
     user = user.split(',')
     response = [int(user[1]), int(user[0])]
     return response
@@ -131,7 +131,7 @@ def main():
 
     tilemap = tilemap_create(cols, rows, bombs)
 
-    while game_continue:   
+    while GAME_CONTINUE:
         tilemap_print(tilemap)
         try:
             user = get_user_input()
